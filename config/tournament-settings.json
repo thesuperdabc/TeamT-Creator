@@ -1,0 +1,15 @@
+{
+  "hostTeamId": "hyperclowntea",
+  "description": "Welcome to the LMAO {TYPE} '{DAY_NUM}' Team Battle! The LMAO Teamfights will be 24/7 (2x12h Teamfights everyday) in 3+0.
+If you want YOUR team added, message @DarkOnCrack (please note that your team needs min. 100 members to get added)
+Have fun and fair play!",
+  "lastTournamentDayNum": 23,
+  "leadersPerTeam": 20,
+  "dayStartHour": 7,
+  "nightStartHour": 19,
+  "tournamentDurationMinutes": 720,
+  "clockTimeMinutes": 3,
+  "clockIncrementSeconds": 0,
+  "rated": true,
+  "variant": "standard"
+}

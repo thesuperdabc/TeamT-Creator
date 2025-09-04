@@ -1,0 +1,40 @@
+name: Dry Run Test
+
+on:
+  workflow_dispatch:   # Manual trigger only
+  pull_request:       # Run on PRs to test changes
+
+jobs:
+  dry-run-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Create temporary config for dry run
+        run: |
+          cp src/config.ts src/config.ts.backup
+          sed -i 's/dryRun: false/dryRun: true/' src/config.ts
+
+      - name: Run Dry Run Test
+        env:
+          OAUTH_TOKEN: ${{ secrets.OAUTH_TOKEN }}
+        run: yarn ts-node src/index.ts
+
+      - name: Restore original config
+        run: mv src/config.ts.backup src/config.ts
+
+      - name: Display dry run results
+        run: |
+          echo "Dry run test completed successfully"
+          echo "No actual tournaments were created - this was a simulation only"

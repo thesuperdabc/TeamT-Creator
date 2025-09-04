@@ -1,0 +1,60 @@
+name: Perfect Tournament Scheduler
+
+on:
+  schedule:
+    # Run once per week on Sunday at 00:00 UTC
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+    inputs:
+      test_mode:
+        description: 'Test run (dry run)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+jobs:
+  create-tournaments:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'yarn'
+    
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile
+    
+    - name: Create 14 tournaments for the week
+      env:
+        OAUTH_TOKEN: ${{ secrets.LICHESS_OAUTH_TOKEN }}
+        DRY_RUN: ${{ github.event.inputs.test_mode }}
+      run: |
+        echo "Creating 14 tournaments for the week"
+        echo "Team: hyperclowntea"
+        echo "Time: $(date)"
+        
+        if [ "$DRY_RUN" = "true" ]; then
+          echo "Test mode - no real tournaments created"
+          yarn perfect:test
+        else
+          echo "Creating REAL tournaments"
+          yarn perfect:create
+        fi
+    
+    - name: Log tournament status
+      if: always()
+      run: |
+        echo "=== TOURNAMENT CREATION REPORT ==="
+        echo "Run time: $(date)"
+        echo "Team: hyperclowntea"
+        echo ""
+        echo "Current state:"
+        cat config/perfect-tournament.state.json || echo "State file not found"
