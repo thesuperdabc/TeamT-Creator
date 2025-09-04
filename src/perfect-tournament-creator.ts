@@ -53,8 +53,8 @@ function validateOAuthToken(token: string): boolean {
     return false;
   }
   
-  const tokenRegex = /^[a-zA-Z0-9_-]+$/;
-  return tokenRegex.test(token) && token.length > 10;
+  // More lenient validation - Lichess tokens can have dots and other characters
+  return token.length > 10;
 }
 
 async function createTeamBattle(params: {
