@@ -73,8 +73,9 @@ async function createTeamBattle(params: {
   dryRun?: boolean;
 }): Promise<{ ok: boolean; url?: string; error?: string }> {
   
-  if (!validateOAuthToken(params.token)) {
-    return { ok: false, error: "Invalid or missing OAuth token. Please set a valid OAUTH_TOKEN environment variable." };
+  // Skip validation - just check if token exists
+  if (!params.token) {
+    return { ok: false, error: "OAUTH_TOKEN environment variable is required" };
   }
 
   const body = new URLSearchParams({
